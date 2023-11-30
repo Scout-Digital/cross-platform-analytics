@@ -23,8 +23,15 @@ count = 0
 ## Function : get_all_contacts
 ##  @params url
 ##  @params contact
+
 ##  **TODO**@params get_all - Boolean variable that triggers a pagination handler. Passing get_all will trigger a recursive component of the function designed to run until there is no logner a 'next' link in the pagination property of the response object
 ##  @returns type dict() - All contacts in a Python Dictionary obejct
+
+# Take in mandatory date range functions and return error if not defined
+# Specify date time period term (day, week, month, year)
+# Date from and date to based on period term
+# Posixt timestamp questions - now variable
+# Checkout R package for usage of time variable (.utils / exec)
 
 def get_contacts(url, contacts_start):
     
@@ -50,6 +57,8 @@ def get_contacts(url, contacts_start):
   
 
 print(get_contacts(url, all_contacts))
+
+
  
 
 
