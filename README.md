@@ -14,6 +14,6 @@ Add client API tokens
 Package Dependencies (installed via pip)
 
 hubspot
-googleads
+google-ads
 requests
 os
