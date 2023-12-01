@@ -1,3 +1,6 @@
+
+
+
 def main(client, customer_id):
     ga_service = client.get_service("GoogleAdsService")
 

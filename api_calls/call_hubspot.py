@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import requests
-import json
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -14,6 +14,32 @@ url = "https://api.hubapi.com/crm/v3/objects/contacts"
 payload = {}
 headers = {
   'Authorization': 'Bearer ' + API_KEY
+}
+
+#Some date logic to properly add time format and date ranges
+
+# Time period in days to look back
+time_period = 'days'
+time_period_qty = 14
+
+date_from = datetime.now() - timedelta(time_period=time_period_qty)
+
+
+#Set up filters object
+user_data = {
+{
+    "filterGroups":[
+      {
+        "filters":[
+          {
+            "propertyName": "createdate",
+            "operator": "GT",
+            "value": date_from
+          }
+        ]
+      }
+    ]
+  }
 }
 
 # Set up global output vars
@@ -35,7 +61,7 @@ count = 0
 
 def get_contacts(url, contacts_start):
     
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.request("GET", url, headers=headers, data=user_data)
     
     result = response.json()
     contacts = result['results']
