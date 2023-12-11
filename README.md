@@ -4,7 +4,6 @@ A python app designed to fetch conversion data from various platforms, clean the
 
 
 
-
 Instructions
 
 Pull cpa app from github.

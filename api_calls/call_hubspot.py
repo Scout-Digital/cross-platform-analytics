@@ -1,7 +1,11 @@
 import os
 from dotenv import load_dotenv
 import requests
+import json
 from datetime import datetime, timedelta
+import time
+import numpy as np
+
 
 load_dotenv()
 
@@ -9,38 +13,51 @@ API_KEY = os.getenv('CLIENT_HUBSPOT_TOKEN')
 
 import requests
 
-url = "https://api.hubapi.com/crm/v3/objects/contacts"
+
+# Modify query string between on deal / contacts
+
+object_type = 'contacts'
+
+url = "https://api.hubapi.com/crm/v3/objects/" + object_type
 
 payload = {}
 headers = {
-  'Authorization': 'Bearer ' + API_KEY
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + API_KEY
 }
 
-#Some date logic to properly add time format and date ranges
+#Date Range - pass in date time in the form of (YYYY, MM, DD, HH, mm) 
+date_from = datetime(2023, 10, 6, 22, 18) 
+date_to = datetime(2023, 11, 6, 0, 0)
 
-# Time period in days to look back
-time_period = 'days'
-time_period_qty = 14
-
-date_from = datetime.now() - timedelta(time_period=time_period_qty)
-
+# Convert to Hupspot required unix timestamp in miliseconds
+date_from = round(time.mktime(date_from.timetuple()) * 1000)
+date_to = round(time.mktime(date_to.timetuple()) * 1000)
 
 #Set up filters object
-user_data = {
-{
-    "filterGroups":[
-      {
-        "filters":[
-          {
-            "propertyName": "createdate",
-            "operator": "GT",
-            "value": date_from
-          }
-        ]
-      }
-    ]
-  }
+name_var = 'Trevor'
+
+
+# Initialize empty dictionary for filters
+filter_dict = {
+  "filterGroups": [
+    {
+       "filters": [
+        {
+          "propertyName": "createdate",
+          "operator": "GTE",
+          "value": date_from
+        }
+      ]
+    }
+  ]
 }
+
+
+# Programatically add items to the filter if they exist
+     
+
+payload = json.dumps(filter_dict)
 
 # Set up global output vars
 all_contacts = list()
@@ -51,28 +68,30 @@ count = 0
 ##  @params contact
 
 ##  **TODO**@params get_all - Boolean variable that triggers a pagination handler. Passing get_all will trigger a recursive component of the function designed to run until there is no logner a 'next' link in the pagination property of the response object
-##  @returns type dict() - All contacts in a Python Dictionary obejct
+##  @returns type dict() -  Contacts in a Python Dictionary obejct
 
-# Take in mandatory date range functions and return error if not defined
-# Specify date time period term (day, week, month, year)
-# Date from and date to based on period term
-# Posixt timestamp questions - now variable
-# Checkout R package for usage of time variable (.utils / exec)
+# Conditionally add /search paramater to url if the filters are built
+if payload !={} : 
+  url = url + '/search'
 
-def get_contacts(url, contacts_start):
+
+def get_contacts(url, data, payload):
     
-    response = requests.request("GET", url, headers=headers, data=user_data)
-    
+    response = requests.request("POST", url, headers=headers, data=payload)
+
     result = response.json()
-    contacts = result['results']
+
+    qty = result['total']
+
+    new_data = result['results']
     
     # Get data from pagination related data from result objects
     p_terms = result['paging']
 
     # merge two lists
-    contacts_updated = contacts_start + contacts
+    data = data + new_data
     
-    return contacts_updated
+    return data
 
     ##TODO - Configure recursive function to handle pagination. This is currently causing a stack overflow error because there are ~25k pages of contacts
     ##if p_terms['next']['link'] == '' : 
@@ -82,15 +101,4 @@ def get_contacts(url, contacts_start):
     # Recall get contacts within get     
   
 
-print(get_contacts(url, all_contacts))
-
-
- 
-
-
-
-
-
-
-
-
+print(json.dumps(get_contacts(url, all_contacts, payload), indent=2))
