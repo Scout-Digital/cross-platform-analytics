@@ -3,11 +3,11 @@
 A python app designed to fetch conversion data from various platforms, clean the data, and return in CSV form for use in client presentations with Google Data Studio.
 
 ## Environment Dependencies
-    * Python 3.12
-    * Pip 23.3.2 (latest)
+   * Python 3.12
+   * Pip 23.3.2 (latest)
 
 ## Package Dependencies (installed via pip3)
-
+   * See requirements.txt
     
 
 ## App Setup Instructions
@@ -21,10 +21,11 @@ A python app designed to fetch conversion data from various platforms, clean the
         * Navigate to root app directory     
     5. Rename .env-sample file to .env (gitignored to hide sensitive customer data)
     6. Add client API tokens 
-    7  
+    7. Create Google Sheet
+    8. Share Google Sheet with Application email address (found on google@scoutdigital.com's google cloud console)
+ 
 
 
-## Package Dependencies (installed via pip3)
     
 
 
