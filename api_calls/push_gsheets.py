@@ -1,6 +1,6 @@
 import os
 import pygsheets
-import pandas as pd
+# import pandas as pd
 
 
 
@@ -22,7 +22,7 @@ def push_to_gsheets(data, sheet_key, **kwargs):
     wks = sh[sn]
 
     #update the first sheet with df, starting at cell B2. 
-    wks.append_table(data, start='A2', end=None, dimension='ROWS', overwrite=True)
+    wks.append_table(data, start='2', end=None, dimension='ROWS', overwrite=True)
 
 
 
